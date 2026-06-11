@@ -3,12 +3,16 @@ import os
 
 class AIProcessor:
     def __init__(self, api_key):
-        if not api_key or api_key == "your_gemini_api_key_here":
+        if not api_key or api_key in ["your_gemini_api_key_here", ""]:
             self.client = None
-            print("Warning: Gemini API Key missing or default. Summaries will be literal.")
+            print("[bold red]Error: Invalid Gemini API Key.[/bold red] Please update your .env file.")
             return
         
-        self.client = genai.Client(api_key=api_key)
+        try:
+            self.client = genai.Client(api_key=api_key)
+        except Exception as e:
+            self.client = None
+            print(f"Failed to initialize Gemini Client: {e}")
 
     def summarize_repo(self, name, description):
         if not self.client:

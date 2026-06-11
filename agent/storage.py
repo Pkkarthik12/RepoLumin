@@ -17,7 +17,7 @@ class StorageManager:
         if os.path.exists(self.config_path):
             with open(self.config_path, "r") as f:
                 return json.load(f)
-        return {"interests": [], "setup_complete": False}
+        return {"interests": [], "setup_complete": False, "unique_only": True}
 
     def save_config(self, config):
         with open(self.config_path, "w") as f:
