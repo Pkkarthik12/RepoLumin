@@ -27,12 +27,21 @@ DEFAULT_INTERESTS = [
 ]
 
 def run_setup():
+    config = storage.load_config()
+    current_interests = config.get("interests", [])
+
     console.print(Panel("[bold cyan]RepoLumin Configuration Wizard[/bold cyan]"))
     console.print("[dim]Tip: Use [bold]SPACE[/bold] to select topics, and [bold]ENTER[/bold] to finish.[/dim]\n")
     
+    # Create choices with current interests pre-selected
+    choices = [
+        questionary.Choice(title=topic, checked=(topic in current_interests))
+        for topic in DEFAULT_INTERESTS
+    ]
+    
     selected = questionary.checkbox(
         "Which domains would you like to track?",
-        choices=DEFAULT_INTERESTS
+        choices=choices
     ).ask()
 
     custom = questionary.text("Add any custom keywords (comma separated, or leave blank):").ask()
