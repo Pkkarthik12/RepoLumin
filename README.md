@@ -1,6 +1,5 @@
 # RepoLumin: Local Automated GitHub AI Curator
 
-![RepoLumin Banner](https://via.placeholder.com/1200x400?text=RepoLumin+|+Illuminate+the+Code)
 
 RepoLumin is an autonomous AI agent that runs locally on your machine to discover, curate, and summarize the best new GitHub repositories in your specific areas of interest.
 
