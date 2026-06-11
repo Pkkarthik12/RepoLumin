@@ -1,18 +1,17 @@
-import google.generativeai as genai
+from google import genai
 import os
 
 class AIProcessor:
     def __init__(self, api_key):
-        if not api_key:
-            self.model = None
-            print("Warning: Gemini API Key missing. Summaries will be literal.")
+        if not api_key or api_key == "your_gemini_api_key_here":
+            self.client = None
+            print("Warning: Gemini API Key missing or default. Summaries will be literal.")
             return
         
-        genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel('gemini-1.5-flash')
+        self.client = genai.Client(api_key=api_key)
 
     def summarize_repo(self, name, description):
-        if not self.model:
+        if not self.client:
             return description
 
         prompt = f"""
@@ -25,7 +24,10 @@ class AIProcessor:
         """
         
         try:
-            response = self.model.generate_content(prompt)
+            response = self.client.models.generate_content(
+                model='gemini-2.0-flash',
+                contents=prompt
+            )
             return response.text.strip()
         except Exception as e:
             print(f"AI Summary failed for {name}: {e}")

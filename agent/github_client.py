@@ -5,7 +5,8 @@ class GitHubClient:
     def __init__(self, token=None):
         self.base_url = "https://api.github.com/search/repositories"
         self.headers = {"Accept": "application/vnd.github.v3+json"}
-        if token:
+        # Only add token if it's provided and not the placeholder
+        if token and token != "your_github_token_here":
             self.headers["Authorization"] = f"token {token}"
 
     def search_repos(self, query, max_results=5):
