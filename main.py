@@ -123,7 +123,8 @@ def main_menu():
     config = storage.load_config()
     if not config.get("setup_complete"):
         config = run_setup()
-
+        # After first setup, immediately ask for action
+    
     while True:
         choice = questionary.select(
             "RepoLumin Control Panel:",
@@ -137,9 +138,13 @@ def main_menu():
         ).ask()
 
         if choice == "Start Background Automation (Daily)":
-            harvest()
+            harvest() # Run once immediately
             scrape_time = os.getenv("SCRAPE_HOUR_24H", "09:00")
+            
+            # Clear existing schedules to avoid duplicates
+            schedule.clear()
             schedule.every().day.at(scrape_time).do(harvest)
+            
             console.print(f"\n[bold green]Background Watcher Active.[/bold green] Scheduled for {scrape_time} daily.")
             console.print("[dim]Press Ctrl+C to return to menu.[/dim]")
             try:
@@ -148,7 +153,7 @@ def main_menu():
                     time.sleep(60)
             except KeyboardInterrupt:
                 schedule.clear()
-                console.print("\n[yellow]Background watcher paused.[/yellow]")
+                console.print("\n[yellow]Background watcher paused. Returning to menu...[/yellow]")
 
         elif choice == "Manual Harvest (Scrape specific topics now)":
             topics = questionary.checkbox("Select topics to harvest right now:", choices=config["interests"]).ask()

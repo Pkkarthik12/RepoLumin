@@ -34,5 +34,12 @@ class AIProcessor:
             )
             return response.text.strip()
         except Exception as e:
-            print(f"AI Summary failed for {name}: {e}")
+            if "401" in str(e):
+                # Only print once to avoid spamming
+                if not hasattr(self, '_auth_error_shown'):
+                    print("\n[bold red]AI Authentication Failed:[/bold red] Your Gemini API key is invalid or not set correctly in the .env file.")
+                    print("Summaries will be saved using raw GitHub descriptions for now.\n")
+                    self._auth_error_shown = True
+            else:
+                print(f"AI Summary failed for {name}: {e}")
             return description

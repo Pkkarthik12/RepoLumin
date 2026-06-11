@@ -16,8 +16,9 @@ class GitHubClient:
         """
         yesterday = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
         
-        # GitHub Search Query: query + created after yesterday
-        full_query = f"{query} created:>{yesterday}"
+        # GitHub Search Query: search for topic OR keywords created after yesterday
+        # This makes it less likely to just match names and more likely to find actual robotics/ros projects
+        full_query = f"topic:{query} OR {query} created:>{yesterday}"
         params = {
             "q": full_query,
             "sort": "stars",

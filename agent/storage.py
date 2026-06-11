@@ -46,12 +46,19 @@ class StorageManager:
         file_name = f"projects_{date_str}.csv"
         file_path = os.path.join(self.exports_dir, file_name)
 
-        if os.path.exists(file_path):
-            # Append if file exists
-            existing_df = pd.read_csv(file_path)
-            combined_df = pd.concat([existing_df, df], ignore_index=True)
-            combined_df.to_csv(file_path, index=False)
-        else:
-            df.to_csv(file_path, index=False)
-        
-        return file_path
+        try:
+            if os.path.exists(file_path):
+                # Append if file exists
+                existing_df = pd.read_csv(file_path)
+                combined_df = pd.concat([existing_df, df], ignore_index=True)
+                combined_df.to_csv(file_path, index=False)
+            else:
+                df.to_csv(file_path, index=False)
+            return file_path
+        except PermissionError:
+            print(f"\n[bold red]Permission Error:[/bold red] Could not save to {file_path}.")
+            print("Please close the CSV file if it is open in another program (like Excel) and try again.")
+            return None
+        except Exception as e:
+            print(f"Error saving spreadsheet: {e}")
+            return None
