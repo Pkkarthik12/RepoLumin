@@ -56,9 +56,13 @@ class StorageManager:
                 df.to_csv(file_path, index=False)
             return file_path
         except PermissionError:
-            print(f"\n[bold red]Permission Error:[/bold red] Could not save to {file_path}.")
-            print("Please close the CSV file if it is open in another program (like Excel) and try again.")
-            return None
+            # Fallback to a timestamped version if the main one is locked (e.g. open in Excel)
+            timestamp = datetime.now().strftime("%H%M%S")
+            backup_path = os.path.join(self.exports_dir, f"projects_{date_str}_{timestamp}.csv")
+            console.print(f"\n[bold red]Permission Denied:[/bold red] {file_path} is open in another program.")
+            console.print(f"[yellow]Saving a backup copy to:[/yellow] {backup_path}")
+            df.to_csv(backup_path, index=False)
+            return backup_path
         except Exception as e:
             print(f"Error saving spreadsheet: {e}")
             return None

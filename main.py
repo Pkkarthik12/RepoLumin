@@ -157,7 +157,19 @@ def main_menu():
                 console.print("\n[yellow]Background watcher paused. Returning to menu...[/yellow]")
 
         elif choice == "Manual Harvest (Scrape specific topics now)":
-            topics = questionary.checkbox("Select topics to harvest right now:", choices=config["interests"]).ask()
+            # Combine current interests with defaults for a wider selection
+            available = list(set(config["interests"] + DEFAULT_INTERESTS))
+            available.sort()
+            
+            topics = questionary.checkbox(
+                "Select topics to harvest right now (SPACE to pick):", 
+                choices=available
+            ).ask()
+            
+            custom_now = questionary.text("Or type a new topic to search for immediately (leave blank to skip):").ask()
+            if custom_now:
+                topics = (topics or []) + [custom_now.strip()]
+            
             if topics:
                 harvest(target_topics=topics)
         
