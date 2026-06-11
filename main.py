@@ -28,6 +28,7 @@ DEFAULT_INTERESTS = [
 
 def run_setup():
     console.print(Panel("[bold cyan]RepoLumin Configuration Wizard[/bold cyan]"))
+    console.print("[dim]Tip: Use [bold]SPACE[/bold] to select topics, and [bold]ENTER[/bold] to finish.[/dim]\n")
     
     selected = questionary.checkbox(
         "Which domains would you like to track?",
